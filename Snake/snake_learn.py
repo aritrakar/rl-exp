@@ -1,4 +1,3 @@
-import gymnasium as gym
 from stable_baselines3 import A2C, PPO
 from snake_env import SnakeEnv
 import os
@@ -16,7 +15,6 @@ if (not os.path.exists(LOG_DIR)):
 
 TIMESTEPS = 10000
 
-# env = gym.make("SnakeEnv", render_mode="human")
 env = SnakeEnv()
 observation, info = env.reset(seed=42)
 

@@ -1,10 +1,11 @@
-from collections import deque
-import gymnasium as gym
-from gymnasium import spaces
-import numpy as np
-import cv2
 import random
 import time
+from collections import deque
+
+import cv2
+import gymnasium as gym
+import numpy as np
+from gymnasium import spaces
 
 
 def collision_with_apple(apple_position, score):
@@ -29,7 +30,7 @@ def collision_with_self(snake_position):
 
 
 class SnakeEnv(gym.Env):
-    """Custom Environment that follows gym interface"""
+    '''Custom Environment following the gymnasium interface'''
 
     def __init__(self):
         super(SnakeEnv, self).__init__()
