@@ -1,35 +1,73 @@
-import gymnasium as gym
+# import gymnasium as gym
 
+# from stable_baselines3 import A2C
+# from stable_baselines3.common.evaluation import evaluate_policy
+# from stable_baselines3.common.env_util import make_atari_env
+# from stable_baselines3.common.vec_env import VecFrameStack
+
+
+# # Create environment
+# # vec_env = make_atari_env("PongNoFrameskip-v4", n_envs=4, seed=0, )
+# # # Frame-stacking with 4 frames
+# # vec_env = VecFrameStack(vec_env, n_stack=4)
+
+# env = gym.make("PongNoFrameskip-v4", render_mode="human")
+
+# # Load the trained agent
+# # NOTE: if you have loading issue, you can pass `print_system_info=True`
+# # to compare the system on which the model was trained vs the current one
+# # model = DQN.load("dqn_lunar", env=env, print_system_info=True)
+# model = A2C.load("models/Pong-PPO/290000", env=env)
+
+# # Evaluate the agent
+# # NOTE: If you use wrappers with your environment that modify rewards,
+# #       this will be reflected here. To evaluate with original rewards,
+# #       wrap environment in a "Monitor" wrapper before other wrappers.
+# mean_reward, std_reward = evaluate_policy(
+#     model, model.get_env(), n_eval_episodes=10)
+
+# # Enjoy trained agent
+# vec_env = model.get_env()
+# obs = vec_env.reset()
+# for i in range(1000):
+#     action, _states = model.predict(obs, deterministic=True)
+#     obs, rewards, dones, info = vec_env.step(action)
+#     vec_env.render("human")
+
+
+import gymnasium as gym
 from stable_baselines3 import A2C
-from stable_baselines3.common.evaluation import evaluate_policy
 from stable_baselines3.common.env_util import make_atari_env
 from stable_baselines3.common.vec_env import VecFrameStack
+from stable_baselines3.common.evaluation import evaluate_policy
+import os
 
+# Load the trained model
+MODEL = "Pong-PPO"
+MODELS_DIR = "models"
+MODEL_PATH = os.path.join(MODELS_DIR, MODEL, '290000.zip')
 
-# Create environment
-# vec_env = make_atari_env("PongNoFrameskip-v4", n_envs=4, seed=0, )
-# # Frame-stacking with 4 frames
-# vec_env = VecFrameStack(vec_env, n_stack=4)
+model = A2C.load(MODEL_PATH)
 
-env = gym.make("PongNoFrameskip-v4", render_mode="human")
+print("Loaded model.")
 
-# Load the trained agent
-# NOTE: if you have loading issue, you can pass `print_system_info=True`
-# to compare the system on which the model was trained vs the current one
-# model = DQN.load("dqn_lunar", env=env, print_system_info=True)
-model = A2C.load("models/Pong-PPO/290000", env=env)
+# Create the game environment
+env = make_atari_env("PongNoFrameskip-v4", n_envs=1, seed=0)
+env = VecFrameStack(env, n_stack=4)
 
-# Evaluate the agent
-# NOTE: If you use wrappers with your environment that modify rewards,
-#       this will be reflected here. To evaluate with original rewards,
-#       wrap environment in a "Monitor" wrapper before other wrappers.
-mean_reward, std_reward = evaluate_policy(
-    model, model.get_env(), n_eval_episodes=10)
+# mean_reward, std_reward = evaluate_policy(
+#     model, model.get_env(), n_eval_episodes=10)
 
-# Enjoy trained agent
-vec_env = model.get_env()
-obs = vec_env.reset()
-for i in range(1000):
+# Run the model in the environment
+obs = env.reset()
+
+print("Initialized environment.")
+
+for i in range(1000):  # You can adjust the number of steps
     action, _states = model.predict(obs, deterministic=True)
-    obs, rewards, dones, info = vec_env.step(action)
-    vec_env.render("human")
+    obs, rewards, dones, info = env.step(action)
+    env.render("human")
+
+env.close()
+
+print("Closed environment.")
