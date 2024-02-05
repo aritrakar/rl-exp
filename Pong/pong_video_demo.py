@@ -31,7 +31,9 @@ def collect_frames():
     # Assuming you know the frame dimensions (height, width, channels)
     # You might need to adjust these based on your environment's specifics
     height, width, channels = (210, 160, 3)
-    total_frames = ((30 - 1) // SKIP + 2) * NUM_FRAMES
+    
+    # 29//SKIP epochs + 2 for final epoch because double the no. of frames
+    total_frames = ((30 - 1) // SKIP + 1 + 1) * NUM_FRAMES
     all_frames = np.empty((total_frames, height, width, channels), dtype=np.uint8)
 
     print("all_frames.shape: ", all_frames.shape)
